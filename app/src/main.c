@@ -9,6 +9,7 @@
 
 #include <errno.h>
 #include <stddef.h>
+#include <string.h>
 
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/conn.h>
@@ -27,6 +28,8 @@
 #include <zephyr/usb/usb_device.h>
 
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/uart.h>
+
 
 #if IS_ENABLED(CONFIG_LED_INDICATOR)
 #define LED0_NODE DT_ALIAS(led0)
@@ -156,7 +159,7 @@ static uint8_t notify_func(struct bt_conn *conn, struct bt_gatt_subscribe_params
 		}
 	}
 
-	printk("[NOTIFICATION] ID %hu: ", report_id);
+	//printk("[NOTIFICATION] ID %hu: ", report_id);
 	const uint8_t *data_bytes = data;
 	for (uint16_t i = 0; i < length; i++) {
 		printk("%02x", data_bytes[i]);
@@ -645,9 +648,9 @@ static void connected(struct bt_conn *conn, uint8_t conn_err)
 
 	printk("Connected: %s\n", addr);
 
-	err = bt_conn_set_security(conn, BT_SECURITY_L2);
+	err = bt_conn_set_security(conn, BT_SECURITY_L4);
 	if (err) {
-		printk("Pairing L2 failed(err %d)\n", err);
+		printk("Pairing L4 failed(err %d)\n", err);
 	}
 
 	// if (conn == default_conn) {
@@ -798,7 +801,7 @@ void main(void)
 	// }
 
 	// k_sleep(K_SECONDS(10));
-
+	printf("Hello World! %s\n", CONFIG_BOARD);
 	int err;
 	int ret;
 	err = bt_enable(NULL);
